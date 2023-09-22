@@ -123,30 +123,7 @@ class userHealthRecordController {
     }
     res.send({ userHealthRecord: result });
   };
-  //   static filterUHR = async (req, res) => {
-  //     try {
-  //         const filters = {};
-  //         for (const key in req.query) {
-  //             if (req.query[key].includes(',')) {
-  //                 const values = req.query[key].split(',');
-  //                 if(key==="date"){
-  //                     values[0]=new Date(values[0])
-  //                     values[1]=new Date(values[1])
-  //                 }
-  //                 filters[key] = { $gte: values[0], $lte: values[1] };
-  //             } else if (req.query[key]) {
-  //                 if(key==="orderDate"){
-  //                     req.query.key=new Date(req.query.key)
-  //                 }
-  //                 filters[key] = req.query[key];
-  //             }
-  //         }
-  //         const orders=await orderModel.find(filters)
-  //         res.send({"status":"success","orders":orders})
-  //     } catch (error) {
-  //         res.send({"status":"failed","message":"Failed to filter orders ...."})
-  //     }
-  //   };
+  static filterUHR = async (req, res) => {};
 }
 
 export default userHealthRecordController;
