@@ -16,6 +16,6 @@ const doctorSchema = new mongoose.Schema({
   subSpeciality: [{ type: String, required: true, trim: true }],
 });
 // Model
-const doctorModel = mongoose.model("user", doctorSchema);
+const doctorModel = mongoose.model("doctor", doctorSchema);
 
 export default doctorModel;

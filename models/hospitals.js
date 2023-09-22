@@ -14,6 +14,6 @@ const hospitalSchema = new mongoose.Schema({
   speciality: [{ type: String, required: true, trim: true }],
 });
 // Model
-const hospitalModel = mongoose.model("user", hospitalSchema);
+const hospitalModel = mongoose.model("hospital", hospitalSchema);
 
 export default hospitalModel;
