@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const hospitalsSchema = new mongoose.Schema({
+const hospitalSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: { type: String, required: true, trim: true },
   password: { type: String, required: true, trim: true },
@@ -13,5 +13,7 @@ const hospitalsSchema = new mongoose.Schema({
   state: { type: String, required: true, trim: true },
   speciality: [{ type: String, required: true, trim: true }],
 });
+// Model
+const hospitalModel = mongoose.model("user", hospitalSchema);
 
-export default hospitalsSchema;
+export default hospitalModel;

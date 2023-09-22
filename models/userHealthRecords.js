@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userHealthRecordsSchema = new mongoose.Schema({
+const userHealthRecordSchema = new mongoose.Schema({
   healthRecordTitle: { type: String, required: true, trim: true },
   userAddharID: { type: String, required: true, trim: true },
   hospitalEmailID: { type: String, required: true, trim: true },
@@ -10,4 +10,9 @@ const userHealthRecordsSchema = new mongoose.Schema({
   documentLink: { type: String, required: true, trim: true },
 });
 
-export default userHealthRecordsSchema;
+const userHealthRecordModel = mongoose.model(
+  "userHealthRecord",
+  userHealthRecordSchema
+);
+
+export default userHealthRecordModel;
