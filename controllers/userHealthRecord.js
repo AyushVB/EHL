@@ -110,18 +110,20 @@ class userHealthRecordController {
       const result = await userHealthRecordModel.find({
         hospitalEmailID: hospital1.email,
       });
+      res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "user") {
       const user1 = await userModel.findById(user.userID);
       const result = await userHealthRecordModel.find({
         userAddharID: user1.addharID,
       });
+      res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "doctor") {
-      const doctor1 = await hospitalModel.findById(doctor.userID);
+      const doctor1 = await doctorModel.findById(doctor.userID);
       const result = await userHealthRecordModel.find({
         doctorEmailID: doctor1.email,
       });
+      res.send({ userHealthRecord: result });
     }
-    res.send({ userHealthRecord: result });
   };
   static filterUHR = async (req, res) => {};
 }
