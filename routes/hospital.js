@@ -15,13 +15,13 @@ router.post(
   "/sent-reset-password-email",
   hospitalController.sendHospitalPasswordResetEmail
 );
-router.put(
+router.patch(
   "/reset-password/:id/:token",
   hospitalController.hospitalPasswordReset
 );
 
 // protected routes
-router.put("/changepassword", hospitalController.changeHospitalPassword);
+router.patch("/changepassword", hospitalController.changeHospitalPassword);
 router.get("/loggedhospital", hospitalController.loggedHospital);
 
 // export
