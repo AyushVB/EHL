@@ -10,7 +10,7 @@ dotenv.config();
 // healthRecordTitle, userAddharID, hospitalEmailID, doctorEmailID, date, documentType, documentLink
 class userHealthRecordController {
   static addUHR = async (req, res) => {
-    const {
+    let {
       healthRecordTitle,
       userAddharID,
       doctorEmailID,
@@ -28,6 +28,7 @@ class userHealthRecordController {
       documentLink
     ) {
       try {
+        date = new Date(date);
         const newUserHealthRecord = new userHealthRecordModel({
           healthRecordTitle: healthRecordTitle,
           userAddharID: userAddharID,
@@ -42,10 +43,10 @@ class userHealthRecordController {
         res.status(201).send({
           status: "Success",
           message: "UHR added sucessfully....",
-          token: token,
         });
       } catch (error) {
         res.send({ status: "failed", message: "Unable to add...." });
+        console.log(error);
       }
     } else {
       res.send({ status: "failed", message: "All fields are required" });
@@ -106,26 +107,61 @@ class userHealthRecordController {
   };
   static getUHR = async (req, res) => {
     if (req.userHealthRecord.type === "hospital") {
-      const hospital1 = await hospitalModel.findById(hospital.userID);
+      const hospital1 = await hospitalModel.findById(
+        req.userHealthRecord.hospitalID
+      );
       const result = await userHealthRecordModel.find({
         hospitalEmailID: hospital1.email,
       });
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "user") {
-      const user1 = await userModel.findById(user.userID);
+      const user1 = await userModel.findById(req.userHealthRecord.userID);
       const result = await userHealthRecordModel.find({
         userAddharID: user1.addharID,
       });
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "doctor") {
-      const doctor1 = await doctorModel.findById(doctor.userID);
+      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorID);
       const result = await userHealthRecordModel.find({
         doctorEmailID: doctor1.email,
       });
       res.send({ userHealthRecord: result });
     }
   };
-  static filterUHR = async (req, res) => {};
+  static filterUHR = async (req, res) => {
+    const { start, limit } = req.query;
+    if (req.userHealthRecord.type === "hospital") {
+      const hospital1 = await hospitalModel.findById(
+        req.userHealthRecord.hospitalID
+      );
+      const result = await userHealthRecordModel
+        .find({
+          hospitalEmailID: hospital1.email,
+        })
+        .skip(parseInt(start))
+        .limit(parseInt(limit));
+      res.send({ userHealthRecord: result });
+    } else if (req.userHealthRecord.type === "user") {
+      const user1 = await userModel.findById(req.userHealthRecord.userID);
+      const result = await userHealthRecordModel
+        .find({
+          userAddharID: user1.addharID,
+        })
+        .skip(parseInt(start))
+        .limit(parseInt(limit));
+      res.send({ userHealthRecord: result });
+    } else if (req.userHealthRecord.type === "doctor") {
+      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorID);
+      const result = await userHealthRecordModel
+        .find({
+          doctorEmailID: doctor1.email,
+        })
+        .skip(parseInt(start))
+        .limit(parseInt(limit));
+      res.send({ userHealthRecord: result });
+    }
+    const records = await Record.find();
+  };
 }
 
 export default userHealthRecordController;
