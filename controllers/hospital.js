@@ -132,7 +132,10 @@ class hospitalController {
     }
   };
   static loggedHospital = async (req, res) => {
-    res.send({ hospital: req.hospital });
+    res.send({
+      status: "success",
+      hospital: req.hospital,
+    });
   };
   static sendHospitalPasswordResetEmail = async (req, res) => {
     const { email } = req.body;

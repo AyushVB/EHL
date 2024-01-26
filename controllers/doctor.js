@@ -138,7 +138,10 @@ class doctorController {
     }
   };
   static loggedDoctor = async (req, res) => {
-    res.send({ doctor: req.doctor });
+    res.send({
+      status: "success",
+      doctor: req.doctor,
+    });
   };
   static sendDoctorPasswordResetEmail = async (req, res) => {
     const { email } = req.body;

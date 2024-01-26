@@ -155,7 +155,10 @@ class userController {
     }
   };
   static loggedUser = async (req, res) => {
-    res.send({ user: req.user });
+    res.send({
+      status: "success",
+      user: req.user,
+    });
   };
   static sendUserPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
