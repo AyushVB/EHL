@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import transporter from "../config/emailConfig.js";
 import dotenv from "dotenv";
 dotenv.config();
-// firstName, middleName, lastName, email, password, dateOfBirth, PAN_ID, addharID, mobile, emergencyMobile, localAddress, city, district, state, gender, image, ABHA_ID, bloodGroup, longLifeDisease
+// firstName, middleName, lastName, email, password, dateOfBirth, PAN_id, aadharId, mobile, emergencyMobile, localAddress, city, district, state, gender, image, ABHA_id, bloodGroup, longLifeDisease
 class userController {
   static userRegistration = async (req, res) => {
     const {
@@ -14,8 +14,8 @@ class userController {
       email,
       password,
       dateOfBirth,
-      PAN_ID,
-      addharID,
+      PAN_id,
+      aadharId,
       mobile,
       emergencyMobile,
       localAddress,
@@ -24,13 +24,13 @@ class userController {
       state,
       gender,
       image,
-      ABHA_ID,
+      ABHA_id,
       bloodGroup,
       longLifeDisease,
     } = req.body;
-    const user = await userModel.findOne({ addharID: addharID });
+    const user = await userModel.findOne({ aadharId: aadharId });
     if (user) {
-      res.send({ status: "failed", message: "addhar id already exists" });
+      res.send({ status: "failed", message: "addhar Id already exists" });
     } else {
       if (
         firstName &&
@@ -39,8 +39,8 @@ class userController {
         email &&
         password &&
         dateOfBirth &&
-        PAN_ID &&
-        addharID &&
+        PAN_id &&
+        aadharId &&
         mobile &&
         emergencyMobile &&
         localAddress &&
@@ -49,7 +49,7 @@ class userController {
         state &&
         gender &&
         image &&
-        ABHA_ID &&
+        ABHA_id &&
         bloodGroup &&
         longLifeDisease
       ) {
@@ -64,8 +64,8 @@ class userController {
             email: email,
             password: hashPassword,
             dateOfBirth: dateOfBirth,
-            PAN_ID: PAN_ID,
-            addharID: addharID,
+            PAN_id: PAN_id,
+            aadharId: aadharId,
             mobile: mobile,
             emergencyMobile: emergencyMobile,
             localAddress: localAddress,
@@ -74,16 +74,16 @@ class userController {
             state: state,
             gender: gender,
             image: image,
-            ABHA_ID: ABHA_ID,
+            ABHA_id: ABHA_id,
             bloodGroup: bloodGroup,
             longLifeDisease: longLifeDisease,
           });
           await newUser.save();
 
           // JWT create
-          const saved_user = await userModel.findOne({ addharID: addharID });
+          const saved_user = await userModel.findOne({ aadharId: aadharId });
           const token = jwt.sign(
-            { userID: saved_user._id, type: "user" },
+            { userId: saved_user._id, type: "user" },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "2d" }
           );
@@ -102,19 +102,19 @@ class userController {
   };
   static userLogin = async (req, res) => {
     try {
-      const { addharID, password } = req.body;
-      if (addharID && password) {
-        const user = await userModel.findOne({ addharID: addharID });
+      const { aadharId, password } = req.body;
+      if (aadharId && password) {
+        const user = await userModel.findOne({ aadharId: aadharId });
         if (!user) {
           res
             .status(400)
             .send({ status: "failed", message: "You are not register user.." });
         } else {
           const ismatch = await bcrypt.compare(password, user.password);
-          if (ismatch && user.addharID === addharID) {
+          if (ismatch && user.aadharId === aadharId) {
             // JWT create
             const token = jwt.sign(
-              { userID: user._id, type: "user" },
+              { userId: user._id, type: "user" },
               process.env.JWT_SECRET_KEY,
               { expiresIn: "2d" }
             );
@@ -126,7 +126,7 @@ class userController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "AddharID or Password is invalid",
+              message: "AddharId or Password is invalId",
             });
           }
         }
@@ -160,6 +160,32 @@ class userController {
       user: req.user,
     });
   };
+  static fetchByAadharId = async (req, res) => {
+    try {
+      const { aadharId } = req.query;
+      if (aadharId) {
+        const user = await userModel.findOne({ aadharId: aadharId });
+        if (!user) {
+          res
+            .status(400)
+            .send({ status: "failed", message: "You are not register user.." });
+        } else {
+          res.send({
+            status: "success",
+            user: user,
+          });
+        }
+      } else {
+        res.send({ status: "failed", message: "Addhar Id field is required" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to get details of user...",
+      });
+    }
+  };
   static sendUserPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -170,7 +196,7 @@ class userController {
         res.send({ status: "failed", message: "email doesnt exists" });
       } else {
         const secret = user._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ userID: user._id }, secret, {
+        const token = jwt.sign({ userId: user._id }, secret, {
           expiresIn: "15m",
         });
         const link = `http://localhost:3000/api/user/reset/${user._id}/${token}`;
@@ -192,8 +218,8 @@ class userController {
   };
   static userPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { id, token } = req.params;
-    const user = await userModel.findById(id);
+    const { Id, token } = req.params;
+    const user = await userModel.findById(Id);
     const secret = user._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -212,7 +238,7 @@ class userController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({ status: "failed", message: "InvalId token" });
     }
   };
 }

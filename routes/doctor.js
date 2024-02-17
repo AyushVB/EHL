@@ -5,24 +5,21 @@ import checkDoctorAuth from "../middlewares/doctor-auth.js";
 const router = express.Router();
 
 // route level middleware
-router.use("/changepassword", checkDoctorAuth);
-router.use("/loggeddoctor", checkDoctorAuth);
+router.use("/changePassword", checkDoctorAuth);
+router.use("/loggedDoctor", checkDoctorAuth);
 
 // Public routes
 router.post("/register", doctorController.doctorRegistration);
 router.post("/login", doctorController.doctorLogin);
 router.post(
-  "/sent-reset-password-email",
+  "/sentResetPasswordEmail",
   doctorController.sendDoctorPasswordResetEmail
 );
-router.patch(
-  "/reset-password/:id/:token",
-  doctorController.doctorPasswordReset
-);
+router.patch("/resetPassword/:id/:token", doctorController.doctorPasswordReset);
 
 // protected routes
-router.patch("/changepassword", doctorController.changeDoctorPassword);
-router.get("/loggeddoctor", doctorController.loggedDoctor);
+router.patch("/changePassword", doctorController.changeDoctorPassword);
+router.get("/loggedDoctor", doctorController.loggedDoctor);
 
 // export
 export default router;

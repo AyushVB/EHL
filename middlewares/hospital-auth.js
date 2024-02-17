@@ -24,7 +24,7 @@ const checkUserAuth = async (req, res, next) => {
           .send({ status: "failed", message: "Authentication refused" });
       }
       req.hospital = await hospitalModel
-        .findById(hospital.hospitalID)
+        .findById(hospital.hospitalId)
         .select("-password");
       if (!req.hospital) {
         return res

@@ -65,7 +65,7 @@ class doctorController {
           // JWT create
           const saved_doctor = await doctorModel.findOne({ email: email });
           const token = jwt.sign(
-            { doctorID: saved_doctor._id, type: "doctor" },
+            { doctorId: saved_doctor._id, type: "doctor" },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "2d" }
           );
@@ -97,7 +97,7 @@ class doctorController {
           if (ismatch && doctor.email === email) {
             // JWT create
             const token = jwt.sign(
-              { doctorID: doctor._id, type: "doctor" },
+              { doctorId: doctor._id, type: "doctor" },
               process.env.JWT_SECRET_KEY,
               { expiresIn: "2d" }
             );
@@ -109,7 +109,7 @@ class doctorController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "Email or Password is invalid",
+              message: "Email or Password is invalId",
             });
           }
         }
@@ -153,7 +153,7 @@ class doctorController {
         res.send({ status: "failed", message: "email doesnt exists" });
       } else {
         const secret = doctor._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ doctorID: doctor._id }, secret, {
+        const token = jwt.sign({ doctorId: doctor._id }, secret, {
           expiresIn: "15m",
         });
         const link = `http://localhost:3000/api/doctor/reset/${doctor._id}/${token}`;
@@ -175,8 +175,8 @@ class doctorController {
   };
   static doctorPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { id, token } = req.params;
-    const doctor = await doctorModel.findById(id);
+    const { Id, token } = req.params;
+    const doctor = await doctorModel.findById(Id);
     const secret = doctor._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -195,7 +195,7 @@ class doctorController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({ status: "failed", message: "InvalId token" });
     }
   };
 }

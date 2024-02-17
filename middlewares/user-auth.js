@@ -21,7 +21,7 @@ const checkUserAuth = async (req, res, next) => {
           .status(403)
           .send({ status: "failed", message: "Authentication refused" });
       }
-      req.user = await userModel.findById(user.userID).select("-password");
+      req.user = await userModel.findById(user.userId).select("-password");
       if (!req.user) {
         return res
           .status(403)

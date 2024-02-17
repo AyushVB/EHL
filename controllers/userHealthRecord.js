@@ -7,13 +7,13 @@ import jwt from "jsonwebtoken";
 import transporter from "../config/emailConfig.js";
 import dotenv from "dotenv";
 dotenv.config();
-// healthRecordTitle, userAddharID, hospitalEmailID, doctorEmailID, date, documentType, documentLink
+// healthRecordTitle, userAadharId, hospitalEmailId, doctorEmailId, date, documentType, documentLink
 class userHealthRecordController {
   static addUHR = async (req, res) => {
     let {
       healthRecordTitle,
-      userAddharID,
-      doctorEmailID,
+      userAadharId,
+      doctorEmailId,
       date,
       documentType,
       documentLink,
@@ -21,8 +21,8 @@ class userHealthRecordController {
 
     if (
       healthRecordTitle &&
-      userAddharID &&
-      doctorEmailID &&
+      userAadharId &&
+      doctorEmailId &&
       date &&
       documentType &&
       documentLink
@@ -31,9 +31,9 @@ class userHealthRecordController {
         date = new Date(date);
         const newUserHealthRecord = new userHealthRecordModel({
           healthRecordTitle: healthRecordTitle,
-          userAddharID: userAddharID,
-          hospitalEmailID: req.hospital.email,
-          doctorEmailID: doctorEmailID,
+          userAadharId: userAadharId,
+          hospitalEmailId: req.hospital.email,
+          doctorEmailId: doctorEmailId,
           date: date,
           documentType: documentType,
           documentLink: documentLink,
@@ -57,8 +57,8 @@ class userHealthRecordController {
       var {
         id,
         healthRecordTitle,
-        userAddharID,
-        doctorEmailID,
+        userAadharId,
+        doctorEmailId,
         date,
         documentType,
         documentLink,
@@ -67,15 +67,15 @@ class userHealthRecordController {
       if (!UHR) {
         return res.send({
           status: "failed",
-          message: "Given ID is incorrect ....",
+          message: "Given Id is incorrect ....",
         });
       } else {
         await UHRModel.findByIdAndUpdate(id, {
           $set: {
             healthRecordTitle: healthRecordTitle,
-            userAddharID: userAddharID,
-            hospitalEmailID: req.hospital.email,
-            doctorEmailID: doctorEmailID,
+            userAadharId: userAadharId,
+            hospitalEmailId: req.hospital.email,
+            doctorEmailId: doctorEmailId,
             date: date,
             documentType: documentType,
             documentLink: documentLink,
@@ -108,22 +108,22 @@ class userHealthRecordController {
   static getUHR = async (req, res) => {
     if (req.userHealthRecord.type === "hospital") {
       const hospital1 = await hospitalModel.findById(
-        req.userHealthRecord.hospitalID
+        req.userHealthRecord.hospitalId
       );
       const result = await userHealthRecordModel.find({
-        hospitalEmailID: hospital1.email,
+        hospitalEmailId: hospital1.email,
       });
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "user") {
-      const user1 = await userModel.findById(req.userHealthRecord.userID);
+      const user1 = await userModel.findById(req.userHealthRecord.userId);
       const result = await userHealthRecordModel.find({
-        userAddharID: user1.addharID,
+        userAadharId: user1.aadharId,
       });
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "doctor") {
-      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorID);
+      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorId);
       const result = await userHealthRecordModel.find({
-        doctorEmailID: doctor1.email,
+        doctorEmailId: doctor1.email,
       });
       res.send({ userHealthRecord: result });
     }
@@ -132,29 +132,29 @@ class userHealthRecordController {
     const { start, limit } = req.query;
     if (req.userHealthRecord.type === "hospital") {
       const hospital1 = await hospitalModel.findById(
-        req.userHealthRecord.hospitalID
+        req.userHealthRecord.hospitalId
       );
       const result = await userHealthRecordModel
         .find({
-          hospitalEmailID: hospital1.email,
+          hospitalEmailId: hospital1.email,
         })
         .skip(parseInt(start))
         .limit(parseInt(limit));
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "user") {
-      const user1 = await userModel.findById(req.userHealthRecord.userID);
+      const user1 = await userModel.findById(req.userHealthRecord.userId);
       const result = await userHealthRecordModel
         .find({
-          userAddharID: user1.addharID,
+          userAadharId: user1.aadharId,
         })
         .skip(parseInt(start))
         .limit(parseInt(limit));
       res.send({ userHealthRecord: result });
     } else if (req.userHealthRecord.type === "doctor") {
-      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorID);
+      const doctor1 = await doctorModel.findById(req.userHealthRecord.doctorId);
       const result = await userHealthRecordModel
         .find({
-          doctorEmailID: doctor1.email,
+          doctorEmailId: doctor1.email,
         })
         .skip(parseInt(start))
         .limit(parseInt(limit));

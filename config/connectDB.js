@@ -1,9 +1,7 @@
 import mongoose from "mongoose";
 
 const connectDB = async (DB_URL) => {
-  const DB_OPTIONS = {
-    useNewUrlParser: true,
-  };
+  const DB_OPTIONS = {};
   mongoose.set("strictQuery", false);
   try {
     await mongoose.connect(DB_URL, DB_OPTIONS);

@@ -1,4 +1,5 @@
 import hospitalModel from "../models/hospitals.js";
+import userModel from "../models/users.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import transporter from "../config/emailConfig.js";
@@ -59,7 +60,7 @@ class hospitalController {
           // JWT create
           const saved_hospital = await hospitalModel.findOne({ email: email });
           const token = jwt.sign(
-            { hospitalID: saved_hospital._id, type: "hospital" },
+            { hospitalId: saved_hospital._id, type: "hospital" },
             process.env.JWT_SECRET_KEY,
             { expiresIn: "2d" }
           );
@@ -76,6 +77,7 @@ class hospitalController {
       }
     }
   };
+
   static hospitalLogin = async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -91,7 +93,7 @@ class hospitalController {
           if (ismatch && hospital.email === email) {
             // JWT create
             const token = jwt.sign(
-              { hospitalID: hospital._id, type: "hospital" },
+              { hospitalId: hospital._id, type: "hospital" },
               process.env.JWT_SECRET_KEY,
               { expiresIn: "2d" }
             );
@@ -103,7 +105,7 @@ class hospitalController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "Email or Password is invalid",
+              message: "Email or Password is invalId",
             });
           }
         }
@@ -115,6 +117,7 @@ class hospitalController {
       res.status(400).send({ status: "failed", message: "Unable to login..." });
     }
   };
+
   static changeHospitalPassword = async (req, res) => {
     const { password } = req.body;
     if (password) {
@@ -137,6 +140,41 @@ class hospitalController {
       hospital: req.hospital,
     });
   };
+
+  static patientEmergencyInfo = async (req, res) => {
+    try {
+      const { aadharId } = req.query;
+      if (aadharId) {
+        const user = await userModel
+          .findOne({ aadharId: aadharId })
+          .select("-password");
+        if (!user) {
+          res
+            .status(400)
+            .send({ status: "failed", message: "Addhar id is invalid.." });
+        } else {
+          if (user.aadharId === aadharId) {
+            res.send({
+              status: "success",
+              message: "login successfully...",
+              user: user,
+            });
+          } else {
+            res.status(400).send({
+              status: "failed",
+              message: "AddharId or Password is invalId",
+            });
+          }
+        }
+      } else {
+        res.send({ status: "failed", message: "Addhar id field is required" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({ status: "failed", message: "Unable to login..." });
+    }
+  };
+
   static sendHospitalPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -147,7 +185,7 @@ class hospitalController {
         res.send({ status: "failed", message: "email doesnt exists" });
       } else {
         const secret = hospital._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ hospitalID: hospital._id }, secret, {
+        const token = jwt.sign({ hospitalId: hospital._id }, secret, {
           expiresIn: "15m",
         });
         const link = `http://localhost:3000/api/hospital/reset/${hospital._id}/${token}`;
@@ -167,10 +205,11 @@ class hospitalController {
       }
     }
   };
+
   static hospitalPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { id, token } = req.params;
-    const hospital = await hospitalModel.findById(id);
+    const { Id, token } = req.params;
+    const hospital = await hospitalModel.findById(Id);
     const secret = hospital._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -189,7 +228,7 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({ status: "failed", message: "InvalId token" });
     }
   };
 }
