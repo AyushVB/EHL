@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import doctorModel from "../models/doctors.js";
 
-const checkUserAuth = async (req, res, next) => {
+const checkDoctorAuth = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!(authorization && authorization.startsWith("Bearer"))) {
@@ -27,11 +27,11 @@ const checkUserAuth = async (req, res, next) => {
       if (!req.doctor) {
         return res
           .status(403)
-          .send({ status: "failed", message: "Unauthorized doctor " });
+          .send({ status: "failed", message: "Unauthorized doctor" });
       }
       next();
     });
   }
 };
 
-export default checkUserAuth;
+export default checkDoctorAuth;

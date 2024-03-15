@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import transporter from "../config/emailConfig.js";
 import dotenv from "dotenv";
 dotenv.config();
-// firstName, middleName, lastName, email, password, dateOfBirth, PAN_id, aadharId, mobile, emergencyMobile, localAddress, city, district, state, gender, image, ABHA_id, bloodGroup, longLifeDisease
+// firstName, middleName, lastName, email, password, dateOfBirth, PAN_Id, aadharId, mobile, emergencyMobile, localAddress, city, district, state, gender, image, ABHA_Id, bloodGroup, longLifeDisease
 class userController {
   static userRegistration = async (req, res) => {
     const {
@@ -14,7 +14,7 @@ class userController {
       email,
       password,
       dateOfBirth,
-      PAN_id,
+      PAN_Id,
       aadharId,
       mobile,
       emergencyMobile,
@@ -24,13 +24,13 @@ class userController {
       state,
       gender,
       image,
-      ABHA_id,
+      ABHA_Id,
       bloodGroup,
       longLifeDisease,
     } = req.body;
     const user = await userModel.findOne({ aadharId: aadharId });
     if (user) {
-      res.send({ status: "failed", message: "addhar Id already exists" });
+      res.send({ status: "failed", message: "Addhar Id already exists" });
     } else {
       if (
         firstName &&
@@ -39,7 +39,7 @@ class userController {
         email &&
         password &&
         dateOfBirth &&
-        PAN_id &&
+        PAN_Id &&
         aadharId &&
         mobile &&
         emergencyMobile &&
@@ -49,7 +49,7 @@ class userController {
         state &&
         gender &&
         image &&
-        ABHA_id &&
+        ABHA_Id &&
         bloodGroup &&
         longLifeDisease
       ) {
@@ -64,7 +64,7 @@ class userController {
             email: email,
             password: hashPassword,
             dateOfBirth: dateOfBirth,
-            PAN_id: PAN_id,
+            PAN_Id: PAN_Id,
             aadharId: aadharId,
             mobile: mobile,
             emergencyMobile: emergencyMobile,
@@ -74,7 +74,7 @@ class userController {
             state: state,
             gender: gender,
             image: image,
-            ABHA_id: ABHA_id,
+            ABHA_Id: ABHA_Id,
             bloodGroup: bloodGroup,
             longLifeDisease: longLifeDisease,
           });
@@ -126,7 +126,7 @@ class userController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "AddharId or Password is invalId",
+              message: "AddharId or Password is invalid",
             });
           }
         }
@@ -136,6 +136,20 @@ class userController {
     } catch (error) {
       console.log(error);
       res.status(400).send({ status: "failed", message: "Unable to login..." });
+    }
+  };
+  static deleteUser = async (req, res) => {
+    try {
+      const id = req.query.id;
+      const user = await userModel.findById(id);
+      if (!user) {
+        res.send({ status: "failed", message: "user id is incorrect...." });
+      } else {
+        await userModel.findByIdAndDelete(id);
+        res.send({ status: "success", message: "delete user successfully..." });
+      }
+    } catch (error) {
+      res.send({ status: "failed", message: "Unable to delete user...." });
     }
   };
   static changeUserPassword = async (req, res) => {
@@ -218,8 +232,16 @@ class userController {
   };
   static userPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { Id, token } = req.params;
-    const user = await userModel.findById(Id);
+    const { id, token } = req.params;
+
+    let user;
+    try {
+      user = await userModel.findById(id);
+    } catch (error) {
+      res.send({ status: "failed", message: "This is not register user" });
+      return;
+    }
+
     const secret = user._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -238,7 +260,7 @@ class userController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "InvalId token" });
+      res.send({ status: "failed", message: "Invalid token" });
     }
   };
 }

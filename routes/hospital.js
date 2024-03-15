@@ -5,6 +5,7 @@ import checkHospitalAuth from "../middlewares/hospital-auth.js";
 const router = express.Router();
 
 // route level middleware
+router.use("/delete", checkHospitalAuth);
 router.use("/changePassword", checkHospitalAuth);
 router.use("/loggedHospital", checkHospitalAuth);
 router.use("/patientEmergencyInfo", checkHospitalAuth);
@@ -22,8 +23,9 @@ router.patch(
 );
 
 // protected routes
-router.patch("/changepassword", hospitalController.changeHospitalPassword);
-router.get("/loggedhospital", hospitalController.loggedHospital);
+router.delete("/delete", hospitalController.deleteHospital);
+router.patch("/changePassword", hospitalController.changeHospitalPassword);
+router.get("/loggedHospital", hospitalController.loggedHospital);
 router.get("/patientEmergencyInfo", hospitalController.patientEmergencyInfo);
 
 // export

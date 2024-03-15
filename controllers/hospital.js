@@ -77,7 +77,6 @@ class hospitalController {
       }
     }
   };
-
   static hospitalLogin = async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -105,7 +104,7 @@ class hospitalController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "Email or Password is invalId",
+              message: "Email or Password is invalid",
             });
           }
         }
@@ -117,7 +116,23 @@ class hospitalController {
       res.status(400).send({ status: "failed", message: "Unable to login..." });
     }
   };
-
+  static deleteHospital = async (req, res) => {
+    try {
+      const id = req.query.id;
+      const hospital = await hospitalModel.findById(id);
+      if (!hospital) {
+        res.send({ status: "failed", message: "hospital id is incorrect...." });
+      } else {
+        await hospitalModel.findByIdAndDelete(id);
+        res.send({
+          status: "success",
+          message: "delete hospital successfully...",
+        });
+      }
+    } catch (error) {
+      res.send({ status: "failed", message: "Unable to delete hospital...." });
+    }
+  };
   static changeHospitalPassword = async (req, res) => {
     const { password } = req.body;
     if (password) {
@@ -140,7 +155,6 @@ class hospitalController {
       hospital: req.hospital,
     });
   };
-
   static patientEmergencyInfo = async (req, res) => {
     try {
       const { aadharId } = req.query;
@@ -162,7 +176,7 @@ class hospitalController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "AddharId or Password is invalId",
+              message: "AddharId or Password is invalid",
             });
           }
         }
@@ -174,7 +188,6 @@ class hospitalController {
       res.status(400).send({ status: "failed", message: "Unable to login..." });
     }
   };
-
   static sendHospitalPasswordResetEmail = async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -205,11 +218,18 @@ class hospitalController {
       }
     }
   };
-
   static hospitalPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { Id, token } = req.params;
-    const hospital = await hospitalModel.findById(Id);
+    const { id, token } = req.params;
+
+    let hospital;
+    try {
+      hospital = await hospitalModel.findById(id);
+    } catch (error) {
+      res.send({ status: "failed", message: "This is not register hospital" });
+      return;
+    }
+
     const secret = hospital._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -228,7 +248,7 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "InvalId token" });
+      res.send({ status: "failed", message: "Invalid token" });
     }
   };
 }

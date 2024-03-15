@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import hospitalModel from "../models/hospitals.js";
 
-const checkUserAuth = async (req, res, next) => {
+const checkHospitalAuth = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!(authorization && authorization.startsWith("Bearer"))) {
@@ -36,4 +36,4 @@ const checkUserAuth = async (req, res, next) => {
   }
 };
 
-export default checkUserAuth;
+export default checkHospitalAuth;

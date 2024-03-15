@@ -2,11 +2,9 @@ import userHealthRecordModel from "../models/userHealthRecords.js";
 import userModel from "../models/users.js";
 import hospitalModel from "../models/hospitals.js";
 import doctorModel from "../models/doctors.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import transporter from "../config/emailConfig.js";
 import dotenv from "dotenv";
 dotenv.config();
+
 // healthRecordTitle, userAadharId, hospitalEmailId, doctorEmailId, date, documentType, documentLink
 class userHealthRecordController {
   static addUHR = async (req, res) => {
@@ -70,7 +68,7 @@ class userHealthRecordController {
           message: "Given Id is incorrect ....",
         });
       } else {
-        await UHRModel.findByIdAndUpdate(id, {
+        await userHealthRecordModel.findByIdAndUpdate(id, {
           $set: {
             healthRecordTitle: healthRecordTitle,
             userAadharId: userAadharId,
@@ -160,7 +158,6 @@ class userHealthRecordController {
         .limit(parseInt(limit));
       res.send({ userHealthRecord: result });
     }
-    const records = await Record.find();
   };
 }
 

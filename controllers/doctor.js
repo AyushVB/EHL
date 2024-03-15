@@ -109,7 +109,7 @@ class doctorController {
           } else {
             res.status(400).send({
               status: "failed",
-              message: "Email or Password is invalId",
+              message: "Email or Password is invalid",
             });
           }
         }
@@ -119,6 +119,23 @@ class doctorController {
     } catch (error) {
       console.log(error);
       res.status(400).send({ status: "failed", message: "Unable to login..." });
+    }
+  };
+  static deleteDoctor = async (req, res) => {
+    try {
+      const id = req.query.id;
+      const doctor = await doctorModel.findById(id);
+      if (!doctor) {
+        res.send({ status: "failed", message: "doctor id is incorrect...." });
+      } else {
+        await doctorModel.findByIdAndDelete(id);
+        res.send({
+          status: "success",
+          message: "delete doctor successfully...",
+        });
+      }
+    } catch (error) {
+      res.send({ status: "failed", message: "Unable to delete doctor...." });
     }
   };
   static changeDoctorPassword = async (req, res) => {
@@ -175,8 +192,16 @@ class doctorController {
   };
   static doctorPasswordReset = async (req, res) => {
     const { password } = req.body;
-    const { Id, token } = req.params;
-    const doctor = await doctorModel.findById(Id);
+    const { id, token } = req.params;
+
+    let doctor;
+    try {
+      doctor = await doctorModel.findById(id);
+    } catch (error) {
+      res.send({ status: "failed", message: "This is not register doctor" });
+      return;
+    }
+
     const secret = doctor._id + process.env.JWT_SECRET_KEY;
     try {
       jwt.verify(token, secret);
@@ -195,7 +220,7 @@ class doctorController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "InvalId token" });
+      res.send({ status: "failed", message: "Invalid token" });
     }
   };
 }
