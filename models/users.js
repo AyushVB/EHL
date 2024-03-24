@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   bloodGroup: { type: String, required: true, trim: true },
   longLifeDisease: [{ type: String, required: true, trim: true }],
 });
+
 // Model
 const userModel = mongoose.model("user", userSchema);
 

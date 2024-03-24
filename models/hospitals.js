@@ -13,6 +13,7 @@ const hospitalSchema = new mongoose.Schema({
   state: { type: String, required: true, trim: true },
   speciality: [{ type: String, required: true, trim: true }],
 });
+
 // Model
 const hospitalModel = mongoose.model("hospital", hospitalSchema);
 

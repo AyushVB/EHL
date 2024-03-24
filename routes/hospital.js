@@ -8,6 +8,7 @@ const router = express.Router();
 router.use("/delete", checkHospitalAuth);
 router.use("/changePassword", checkHospitalAuth);
 router.use("/loggedHospital", checkHospitalAuth);
+router.use("/sendOTP", checkHospitalAuth);
 router.use("/patientEmergencyInfo", checkHospitalAuth);
 
 // Public routes
@@ -26,6 +27,7 @@ router.patch(
 router.delete("/delete", hospitalController.deleteHospital);
 router.patch("/changePassword", hospitalController.changeHospitalPassword);
 router.get("/loggedHospital", hospitalController.loggedHospital);
+router.post("/sendOTP", hospitalController.sendOTP);
 router.get("/patientEmergencyInfo", hospitalController.patientEmergencyInfo);
 
 // export

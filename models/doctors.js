@@ -15,6 +15,7 @@ const doctorSchema = new mongoose.Schema({
   specialty: { type: String, required: true, trim: true },
   subSpeciality: [{ type: String, required: true, trim: true }],
 });
+
 // Model
 const doctorModel = mongoose.model("doctor", doctorSchema);
 

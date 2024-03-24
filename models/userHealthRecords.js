@@ -10,6 +10,7 @@ const userHealthRecordSchema = new mongoose.Schema({
   documentLink: { type: String, required: true, trim: true },
 });
 
+// Model
 const userHealthRecordModel = mongoose.model(
   "userHealthRecord",
   userHealthRecordSchema
