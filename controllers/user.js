@@ -140,12 +140,11 @@ class userController {
   };
   static deleteUser = async (req, res) => {
     try {
-      const id = req.query.id;
-      const user = await userModel.findById(id);
+      const user = await userModel.findById(req.user._id);
       if (!user) {
         res.send({ status: "failed", message: "user id is incorrect...." });
       } else {
-        await userModel.findByIdAndDelete(id);
+        await userModel.findByIdAndDelete(req.user._id);
         res.send({ status: "success", message: "delete user successfully..." });
       }
     } catch (error) {

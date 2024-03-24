@@ -126,12 +126,11 @@ class hospitalController {
   };
   static deleteHospital = async (req, res) => {
     try {
-      const id = req.query.id;
-      const hospital = await hospitalModel.findById(id);
+      const hospital = await hospitalModel.findById(req.hospital._id);
       if (!hospital) {
         res.send({ status: "failed", message: "hospital id is incorrect...." });
       } else {
-        await hospitalModel.findByIdAndDelete(id);
+        await hospitalModel.findByIdAndDelete(req.hospital._id);
         res.send({
           status: "success",
           message: "delete hospital successfully...",
