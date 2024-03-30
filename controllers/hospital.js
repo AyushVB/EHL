@@ -1,5 +1,6 @@
 import hospitalModel from "../models/hospitals.js";
 import userModel from "../models/users.js";
+import userHealthRecordModel from "../models/userHealthRecords.js";
 import verificationModel from "../models/verification.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
