@@ -79,7 +79,11 @@ class hospitalController {
             token: token,
           });
         } catch (error) {
-          res.send({ status: "failed", message: "Unable to register...." });
+          res.send({
+            status: "failed",
+            message: "Unable to register....",
+            error: error.message,
+          });
         }
       } else {
         res.send({ status: "failed", message: "All fields are required" });
@@ -122,7 +126,11 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "failed", message: "Unable to login..." });
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to login...",
+        error: error.message,
+      });
     }
   };
   static deleteHospital = async (req, res) => {
@@ -138,7 +146,11 @@ class hospitalController {
         });
       }
     } catch (error) {
-      res.send({ status: "failed", message: "Unable to delete hospital...." });
+      res.send({
+        status: "failed",
+        message: "Unable to delete hospital....",
+        error: error.message,
+      });
     }
   };
   static changeHospitalPassword = async (req, res) => {
@@ -212,9 +224,11 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res
-        .status(400)
-        .send({ status: "failed", message: "Unable to send OTP..." });
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to send OTP...",
+        error: error.message,
+      });
     }
   };
   static verifyOTP = async (req, res) => {
@@ -262,7 +276,11 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({
+        status: "failed",
+        message: "Unable to verify",
+        error: error.message,
+      });
     }
   };
   static patientEmergencyInfo = async (req, res) => {
@@ -294,37 +312,50 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "failed", message: "Unable to login..." });
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to fetch data...",
+        error: error.message,
+      });
     }
   };
   static sendHospitalPasswordResetEmail = async (req, res) => {
-    const { email } = req.body;
-    if (!email) {
-      res.send({ status: "failed", message: "email field is required..." });
-    } else {
-      const hospital = await hospitalModel.findOne({ email: email });
-      if (!hospital) {
-        res.send({ status: "failed", message: "email doesnt exists" });
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.send({ status: "failed", message: "email field is required..." });
       } else {
-        const secret = hospital._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ hospitalId: hospital._id }, secret, {
-          expiresIn: "15m",
-        });
-        const link = `http://localhost:3000/api/hospital/reset/${hospital._id}/${token}`;
+        const hospital = await hospitalModel.findOne({ email: email });
+        if (!hospital) {
+          res.send({ status: "failed", message: "email doesnt exists" });
+        } else {
+          const secret = hospital._id + process.env.JWT_SECRET_KEY;
+          const token = jwt.sign({ hospitalId: hospital._id }, secret, {
+            expiresIn: "15m",
+          });
+          const link = `http://localhost:3000/api/hospital/reset/${hospital._id}/${token}`;
 
-        // sent email
-        const info = transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: hospital.email,
-          subject: "API-Password Reset Link",
-          html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
-        });
-        res.send({
-          status: "success",
-          message: "password reset email is sent....please check email.. ",
-          info: info,
-        });
+          // sent email
+          const info = transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: hospital.email,
+            subject: "API-Password Reset Link",
+            html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
+          });
+          res.send({
+            status: "success",
+            message: "password reset email is sent....please check email.. ",
+            info: info,
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to send email...",
+        error: error.message,
+      });
     }
   };
   static hospitalPasswordReset = async (req, res) => {
@@ -335,7 +366,11 @@ class hospitalController {
     try {
       hospital = await hospitalModel.findById(id);
     } catch (error) {
-      res.send({ status: "failed", message: "This is not register hospital" });
+      res.send({
+        status: "failed",
+        message: "This is not register hospital",
+        error: error.message,
+      });
       return;
     }
 
@@ -357,7 +392,11 @@ class hospitalController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({
+        status: "failed",
+        message: "Invalid token",
+        error: error.message,
+      });
     }
   };
 }

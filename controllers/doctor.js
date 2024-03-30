@@ -75,7 +75,11 @@ class doctorController {
             token: token,
           });
         } catch (error) {
-          res.send({ status: "failed", message: "Unable to register...." });
+          res.send({
+            status: "failed",
+            message: "Unable to register....",
+            error: error.message,
+          });
         }
       } else {
         res.send({ status: "failed", message: "All fields are required" });
@@ -118,7 +122,11 @@ class doctorController {
       }
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "failed", message: "Unable to login..." });
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to login...",
+        error: error.message,
+      });
     }
   };
   static deleteDoctor = async (req, res) => {
@@ -134,7 +142,11 @@ class doctorController {
         });
       }
     } catch (error) {
-      res.send({ status: "failed", message: "Unable to delete doctor...." });
+      res.send({
+        status: "failed",
+        message: "Unable to delete doctor....",
+        error: error.message,
+      });
     }
   };
   static changeDoctorPassword = async (req, res) => {
@@ -160,33 +172,42 @@ class doctorController {
     });
   };
   static sendDoctorPasswordResetEmail = async (req, res) => {
-    const { email } = req.body;
-    if (!email) {
-      res.send({ status: "failed", message: "email field is required..." });
-    } else {
-      const doctor = await doctorModel.findOne({ email: email });
-      if (!doctor) {
-        res.send({ status: "failed", message: "email doesnt exists" });
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.send({ status: "failed", message: "email field is required..." });
       } else {
-        const secret = doctor._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ doctorId: doctor._id }, secret, {
-          expiresIn: "15m",
-        });
-        const link = `http://localhost:3000/api/doctor/reset/${doctor._id}/${token}`;
+        const doctor = await doctorModel.findOne({ email: email });
+        if (!doctor) {
+          res.send({ status: "failed", message: "email doesnt exists" });
+        } else {
+          const secret = doctor._id + process.env.JWT_SECRET_KEY;
+          const token = jwt.sign({ doctorId: doctor._id }, secret, {
+            expiresIn: "15m",
+          });
+          const link = `http://localhost:3000/api/doctor/reset/${doctor._id}/${token}`;
 
-        // sent email
-        const info = transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: doctor.email,
-          subject: "API-Password Reset Link",
-          html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
-        });
-        res.send({
-          status: "success",
-          message: "password reset email is sent....please check email.. ",
-          info: info,
-        });
+          // sent email
+          const info = transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: doctor.email,
+            subject: "API-Password Reset Link",
+            html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
+          });
+          res.send({
+            status: "success",
+            message: "password reset email is sent....please check email.. ",
+            info: info,
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to send email...",
+        error: error.message,
+      });
     }
   };
   static doctorPasswordReset = async (req, res) => {
@@ -197,7 +218,11 @@ class doctorController {
     try {
       doctor = await doctorModel.findById(id);
     } catch (error) {
-      res.send({ status: "failed", message: "This is not register doctor" });
+      res.send({
+        status: "failed",
+        message: "This is not register doctor",
+        error: error.message,
+      });
       return;
     }
 
@@ -219,7 +244,11 @@ class doctorController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({
+        status: "failed",
+        message: "Invalid token",
+        error: error.message,
+      });
     }
   };
 }

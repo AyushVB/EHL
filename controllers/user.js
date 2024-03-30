@@ -93,7 +93,12 @@ class userController {
             token: token,
           });
         } catch (error) {
-          res.send({ status: "failed", message: "Unable to register...." });
+          console.log({ error: error });
+          res.send({
+            status: "failed",
+            message: "Unable to register....",
+            error: error.message,
+          });
         }
       } else {
         res.send({ status: "failed", message: "All fields are required" });
@@ -135,7 +140,11 @@ class userController {
       }
     } catch (error) {
       console.log(error);
-      res.status(400).send({ status: "failed", message: "Unable to login..." });
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to login...",
+        error: error.message,
+      });
     }
   };
   static deleteUser = async (req, res) => {
@@ -148,7 +157,11 @@ class userController {
         res.send({ status: "success", message: "delete user successfully..." });
       }
     } catch (error) {
-      res.send({ status: "failed", message: "Unable to delete user...." });
+      res.send({
+        status: "failed",
+        message: "Unable to delete user....",
+        error: error.message,
+      });
     }
   };
   static changeUserPassword = async (req, res) => {
@@ -196,37 +209,47 @@ class userController {
       res.status(400).send({
         status: "failed",
         message: "Unable to get details of user...",
+        error: error.message,
       });
     }
   };
   static sendUserPasswordResetEmail = async (req, res) => {
-    const { email } = req.body;
-    if (!email) {
-      res.send({ status: "failed", message: "email field is required..." });
-    } else {
-      const user = await userModel.findOne({ email: email });
-      if (!user) {
-        res.send({ status: "failed", message: "email doesnt exists" });
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.send({ status: "failed", message: "email field is required..." });
       } else {
-        const secret = user._id + process.env.JWT_SECRET_KEY;
-        const token = jwt.sign({ userId: user._id }, secret, {
-          expiresIn: "15m",
-        });
-        const link = `http://localhost:3000/api/user/reset/${user._id}/${token}`;
+        const user = await userModel.findOne({ email: email });
+        if (!user) {
+          res.send({ status: "failed", message: "email doesnt exists" });
+        } else {
+          const secret = user._id + process.env.JWT_SECRET_KEY;
+          const token = jwt.sign({ userId: user._id }, secret, {
+            expiresIn: "15m",
+          });
+          const link = `http://localhost:3000/api/user/reset/${user._id}/${token}`;
 
-        // sent email
-        const info = transporter.sendMail({
-          from: process.env.EMAIL_FROM,
-          to: user.email,
-          subject: "API-Password Reset Link",
-          html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
-        });
-        res.send({
-          status: "success",
-          message: "password reset email is sent....please check email.. ",
-          info: info,
-        });
+          // sent email
+          const info = transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: user.email,
+            subject: "API-Password Reset Link",
+            html: `<a href=${link}>click here</a>to reset your password in next 15 min.`,
+          });
+          res.send({
+            status: "success",
+            message: "password reset email is sent....please check email.. ",
+            info: info,
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
+      res.status(400).send({
+        status: "failed",
+        message: "Unable to send email...",
+        error: error.message,
+      });
     }
   };
   static userPasswordReset = async (req, res) => {
@@ -237,7 +260,11 @@ class userController {
     try {
       user = await userModel.findById(id);
     } catch (error) {
-      res.send({ status: "failed", message: "This is not register user" });
+      res.send({
+        status: "failed",
+        message: "This is not register user",
+        error: error.message,
+      });
       return;
     }
 
@@ -259,7 +286,11 @@ class userController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Invalid token" });
+      res.send({
+        status: "failed",
+        message: "Invalid token",
+        error: error.message,
+      });
     }
   };
 }

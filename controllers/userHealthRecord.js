@@ -43,7 +43,11 @@ class userHealthRecordController {
           message: "UHR added sucessfully....",
         });
       } catch (error) {
-        res.send({ status: "failed", message: "Unable to add...." });
+        res.send({
+          status: "failed",
+          message: "Unable to add....",
+          error: error.message,
+        });
         console.log(error);
       }
     } else {
@@ -86,7 +90,11 @@ class userHealthRecordController {
       }
     } catch (error) {
       console.log(error);
-      res.send({ status: "failed", message: "Unable to update UHR...." });
+      res.send({
+        status: "failed",
+        message: "Unable to update UHR....",
+        error: error.message,
+      });
     }
   };
   static deleteUHR = async (req, res) => {
@@ -100,7 +108,11 @@ class userHealthRecordController {
         res.send({ status: "success", message: "delete UHR successfully..." });
       }
     } catch (error) {
-      res.send({ status: "failed", message: "Unable to delete UHR...." });
+      res.send({
+        status: "failed",
+        message: "Unable to delete UHR....",
+        error: error.message,
+      });
     }
   };
   static getUHR = async (req, res) => {
