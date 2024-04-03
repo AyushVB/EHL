@@ -257,11 +257,15 @@ class hospitalController {
                 });
               }
               if (
-                !(verficationData.OTP === OTP && verficationData.email == email)
+                !(verficationData.OTP == OTP && verficationData.email == email)
               ) {
                 return res.status(403).send({
                   status: "failed",
                   message: "Authentication refused 1",
+                  OTP: OTP,
+                  verficationOTP: verficationData.OTP,
+                  email: email,
+                  verficationEmail: verficationData.email,
                 });
               }
               const result = await userHealthRecordModel.find({
