@@ -261,17 +261,15 @@ class hospitalController {
               ) {
                 return res.status(403).send({
                   status: "failed",
-                  message: "Authentication refused 1",
-                  OTP: OTP,
-                  verficationOTP: verficationData.OTP,
-                  email: email,
-                  verficationEmail: verficationData.email,
+                  message: "Authentication refused",
                 });
               }
-              const result = await userHealthRecordModel.find({
-                userAadharId: user.aadharId,
-              });
-              res.send({ userHealthRecord: result });
+              const token = jwt.sign(
+                { userId: user._id, type: "user" },
+                process.env.JWT_SECRET_KEY,
+                { expiresIn: "1d" }
+              );
+              res.send({ verifiedToken: token });
             }
           );
         }
