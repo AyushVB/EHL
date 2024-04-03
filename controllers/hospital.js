@@ -261,7 +261,7 @@ class hospitalController {
               ) {
                 return res.status(403).send({
                   status: "failed",
-                  message: "Authentication refused",
+                  message: "Authentication refused 1",
                 });
               }
               const result = await userHealthRecordModel.find({
