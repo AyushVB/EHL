@@ -8,7 +8,6 @@ const userHealthRecordSchema = new mongoose.Schema({
   hospitalName: { type: String, required: true, trim: true },
   doctorEmailId: { type: String, required: true, trim: true },
   doctorName: { type: String, required: true, trim: true },
-  disease: { type: String, required: true, trim: true },
   date: { type: Date, default: Date.now },
   documentType: { type: String, required: true, trim: true },
   documentLink: { type: String, required: true, trim: true },

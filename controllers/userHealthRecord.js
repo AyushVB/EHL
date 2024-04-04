@@ -12,7 +12,6 @@ class userHealthRecordController {
       healthRecordTitle,
       userAadharId,
       doctorEmailId,
-      disease,
       date,
       documentType,
       documentLink,
@@ -22,7 +21,6 @@ class userHealthRecordController {
       healthRecordTitle &&
       userAadharId &&
       doctorEmailId &&
-      disease &&
       date &&
       documentType &&
       documentLink
@@ -50,7 +48,6 @@ class userHealthRecordController {
               hospitalName: req.hospital.name,
               doctorEmailId: doctorEmailId,
               doctorName: doctor.name,
-              disease: disease,
               date: date,
               documentType: documentType,
               documentLink: documentLink,
@@ -82,7 +79,6 @@ class userHealthRecordController {
         healthRecordTitle,
         userAadharId,
         doctorEmailId,
-        disease,
         date,
         documentType,
         documentLink,
@@ -117,7 +113,6 @@ class userHealthRecordController {
                 hospitalName: req.hospital.name,
                 doctorEmailId: doctorEmailId,
                 doctorName: doctor.name,
-                disease: disease,
                 date: date,
                 documentType: documentType,
                 documentLink: documentLink,
