@@ -12,6 +12,7 @@ class userHealthRecordController {
       healthRecordTitle,
       userAadharId,
       doctorEmailId,
+      disease,
       date,
       documentType,
       documentLink,
@@ -21,27 +22,47 @@ class userHealthRecordController {
       healthRecordTitle &&
       userAadharId &&
       doctorEmailId &&
+      disease &&
       date &&
       documentType &&
       documentLink
     ) {
       try {
-        date = new Date(date);
-        const newUserHealthRecord = new userHealthRecordModel({
-          healthRecordTitle: healthRecordTitle,
-          userAadharId: userAadharId,
-          hospitalEmailId: req.hospital.email,
-          doctorEmailId: doctorEmailId,
-          date: date,
-          documentType: documentType,
-          documentLink: documentLink,
-        });
-        await newUserHealthRecord.save();
+        const user = await userModel.findOne({ aadharId: userAadharId });
+        if (!user) {
+          res
+            .status(400)
+            .send({ status: "failed", message: "You are not register user.." });
+        } else {
+          const doctor = await doctorModel.findOne({ email: doctorEmailId });
+          if (!doctor) {
+            res.status(400).send({
+              status: "failed",
+              message: "You are not register doctor..",
+            });
+          } else {
+            date = new Date(date);
+            const newUserHealthRecord = new userHealthRecordModel({
+              healthRecordTitle: healthRecordTitle,
+              userAadharId: userAadharId,
+              userName: user.firstName + user.lastName,
+              hospitalEmailId: req.hospital.email,
+              hospitalName: req.hospital.name,
+              doctorEmailId: doctorEmailId,
+              doctorName: doctor.name,
+              disease: disease,
+              date: date,
+              documentType: documentType,
+              documentLink: documentLink,
+            });
+            await newUserHealthRecord.save();
 
-        res.status(201).send({
-          status: "Success",
-          message: "UHR added sucessfully....",
-        });
+            res.status(201).send({
+              status: "Success",
+              message: "UHR added sucessfully....",
+            });
+          }
+        }
       } catch (error) {
         res.send({
           status: "failed",
@@ -61,6 +82,7 @@ class userHealthRecordController {
         healthRecordTitle,
         userAadharId,
         doctorEmailId,
+        disease,
         date,
         documentType,
         documentLink,
@@ -72,21 +94,41 @@ class userHealthRecordController {
           message: "Given Id is incorrect ....",
         });
       } else {
-        await userHealthRecordModel.findByIdAndUpdate(id, {
-          $set: {
-            healthRecordTitle: healthRecordTitle,
-            userAadharId: userAadharId,
-            hospitalEmailId: req.hospital.email,
-            doctorEmailId: doctorEmailId,
-            date: date,
-            documentType: documentType,
-            documentLink: documentLink,
-          },
-        });
-        res.send({
-          status: "Success",
-          message: "updated ...",
-        });
+        const user = await userModel.findOne({ aadharId: userAadharId });
+        if (!user) {
+          res
+            .status(400)
+            .send({ status: "failed", message: "You are not register user.." });
+        } else {
+          const doctor = await doctorModel.findOne({ email: doctorEmailId });
+          if (!doctor) {
+            res.status(400).send({
+              status: "failed",
+              message: "You are not register doctor..",
+            });
+          } else {
+            date = new Date(date);
+            await userHealthRecordModel.findByIdAndUpdate(id, {
+              $set: {
+                healthRecordTitle: healthRecordTitle,
+                userAadharId: userAadharId,
+                userName: user.name,
+                hospitalEmailId: req.hospital.email,
+                hospitalName: req.hospital.name,
+                doctorEmailId: doctorEmailId,
+                doctorName: doctor.name,
+                disease: disease,
+                date: date,
+                documentType: documentType,
+                documentLink: documentLink,
+              },
+            });
+            res.send({
+              status: "Success",
+              message: "updated ...",
+            });
+          }
+        }
       }
     } catch (error) {
       console.log(error);
@@ -117,6 +159,7 @@ class userHealthRecordController {
   };
   static getUHR = async (req, res) => {
     if (req.userHealthRecord.type === "hospital") {
+      console.log(req.userHealthRecord);
       const hospital1 = await hospitalModel.findById(
         req.userHealthRecord.hospitalId
       );
