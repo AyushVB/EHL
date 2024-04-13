@@ -43,7 +43,7 @@ class userHealthRecordController {
             const newUserHealthRecord = new userHealthRecordModel({
               healthRecordTitle: healthRecordTitle,
               userAadharId: userAadharId,
-              userName: user.firstName + user.lastName,
+              userName: user.firstName + " " + user.lastName,
               hospitalEmailId: req.hospital.email,
               hospitalName: req.hospital.name,
               doctorEmailId: doctorEmailId,
